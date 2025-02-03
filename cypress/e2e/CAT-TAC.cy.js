@@ -10,8 +10,10 @@ describe('Visita pagina TAC CAT', () => {
   })
   
   
-  it('Caminho feliz', () => {
+  it.only('Caminho feliz', () => {
     const longText = Cypress._.repeat('ABCDEFGIJKLMNOPQRSTUVWXYZ', 10)
+
+    cy.clock()
 
     cy.get('#firstName').type('Higor', {delay: 0})
     cy.get('#lastName').type('Mesquita', {delay: 0})
@@ -21,9 +23,10 @@ describe('Visita pagina TAC CAT', () => {
     cy.get('#open-text-area').type(longText, {delay: 0})
     cy.get('#file-upload').click()
     cy.contains('button', 'Enviar').click();
-    cy.get('.success > strong').should('be.visible')
     
-    cy.get('.success > strong').should('be.visible').wait(3000).should('not.be.visible')
+    cy.get('.success > strong').should('be.visible')
+    cy.tick(3000)
+    cy.get('.success > strong').should('not.be.visible')
   })
 
   
