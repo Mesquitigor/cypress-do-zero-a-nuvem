@@ -10,7 +10,7 @@ describe('Visita pagina TAC CAT', () => {
   })
   
   
-  it.only('Caminho feliz', () => {
+  it('Caminho feliz', () => {
     const longText = Cypress._.repeat('ABCDEFGIJKLMNOPQRSTUVWXYZ', 10)
 
     cy.clock()
@@ -145,5 +145,32 @@ describe('Visita pagina TAC CAT', () => {
       cy.contains('a', 'Política de Privacidade').invoke('removeAttr', 'target').click()
       cy.url().should('not.eq', initialUrl)
     })
+  })
+  
+  it('Digitar várias vezes a mesma informação usando .time()', () => {
+    cy.fillMandatoryFieldsAndSubmit()
+    const times = 3
+    Cypress._.times(times, () => {
+      cy.get('#open-text-area').type("teste")
+    })
+    cy.get('#open-text-area').should('have.value', 'teste'.repeat(times))
+  })
+  it('exibe e oculta as mensagens de sucesso e erro usando .invoke()', () => {
+    cy.get('.success').invoke('show').should('be.visible').invoke('hide').should('not.be.visible')
+    cy.get('.error').invoke('show').should('be.visible').invoke('hide').should('not.be.visible')
+  })
+  it('preenche o campo da área de texto usando o comando .invoke()', () => {
+    const text = 'typing using invoke()'
+    cy.get('#open-text-area').invoke('val', text)
+    cy.get('#open-text-area').should('have.value', text)
+  })
+  it('faz uma requisição HTTP', () => {
+    cy.request('/').as('getRequest').its('status').should('be.eq', 200)
+    cy.get('@getRequest').its('statusText').should('be.eq', 'OK')
+  })
+  it.only('encontrando o gato', () => {
+    cy.get('h1').invoke('text', '🐈')
+    cy.get('#subtitle').invoke('text', 'Achei o gato, galerinha! ⬆️ mas existe outro')
+    cy.get('#cat').invoke('show').should('be.visible')
   })
 })
